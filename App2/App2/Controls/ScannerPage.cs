@@ -1,4 +1,6 @@
-﻿using Xamarin.Forms;
+﻿using App2.Helpers;
+using System;
+using Xamarin.Forms;
 using ZXing.Mobile;
 using ZXing.Net.Mobile.Forms;
 
@@ -40,6 +42,11 @@ namespace App2.Controls
             BindableProperty.CreateAttached("IsActive", typeof(bool), typeof(ScannerPage), false, BindingMode.OneWayToSource);
 
         /// <summary>
+        /// UseAutoFocus
+        /// </summary>
+        public bool UseAutoFocus { get; set; } = Device.RuntimePlatform == Device.Android;
+
+        /// <summary>
         /// OnAppearing override.
         /// </summary>
         protected override void OnAppearing()
@@ -48,7 +55,10 @@ namespace App2.Controls
 
             base.OnAppearing();
 
-            OnScanStarted();
+            if (UseAutoFocus)
+            {
+                OnScanStarted();
+            }
         }
 
         /// <summary>
@@ -66,7 +76,29 @@ namespace App2.Controls
         /// </summary>
         protected virtual void OnScanStarted()
         {
-            //Nothing here, see Android override.
+            //Autofocus every 3 seconds.
+            Device.StartTimer(TimeSpan.FromSeconds(3), () =>
+            {
+                if (!IsActive)
+                {
+                    //Stop the timer.
+                    return false;
+                }
+                else
+                {
+                    try
+                    {
+                        AutoFocus();
+                    }
+                    catch (Exception e)
+                    {
+                        AlertHelper.DisplayAlert("Exception setting AutoFocus", e.Message + "\n\n" + e.StackTrace);
+                    }
+                }
+
+                //Let the timer run.
+                return true;
+            });
         }
     }
 }
