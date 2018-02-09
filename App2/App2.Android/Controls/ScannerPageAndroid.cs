@@ -1,27 +1,26 @@
-﻿using App2.Helpers;
+﻿using App2.Controls;
+using App2.Helpers;
 using System;
 using Xamarin.Forms;
-using ZXing.Net.Mobile.Forms;
 
-namespace App2.Droid.ViewModels
+namespace App2.Droid.Controls
 {
     /// <summary>
-    /// ZXingViewModelAndroid
+    /// ScannerPageAndroid
     /// </summary>
-    public class ZXingViewModelAndroid : ZXingViewModel
+    public class ScannerPageAndroid : ScannerPage
     {
         /// <summary>
-        /// Run Android specific code on scan started.
+        /// OnScanStarted method to run platform specific code.
         /// </summary>
-        /// <param name="scanPage"></param>
-        protected override void OnScanStarted(ZXingScannerPage scanPage)
+        protected override void OnScanStarted()
         {
-            base.OnScanStarted(scanPage);
+            base.OnScanStarted();
 
             //Autofocus every 3 seconds.
-            Device.StartTimer(TimeSpan.FromSeconds(3), () =>
+            Device.StartTimer(TimeSpan.FromSeconds(1), () =>
             {
-                if (scanPage == null || !IsScanning)
+                if (!IsActive)
                 {
                     //Stop the timer.
                     return false;
@@ -30,7 +29,7 @@ namespace App2.Droid.ViewModels
                 {
                     try
                     {
-                        scanPage.AutoFocus();
+                        AutoFocus();
                     }
                     catch (Exception e)
                     {

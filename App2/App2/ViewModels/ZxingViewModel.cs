@@ -1,9 +1,10 @@
-﻿using App2.Helpers;
+﻿using App2.Controls;
+using App2.Helpers;
+using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
 using ZXing.Mobile;
-using ZXing.Net.Mobile.Forms;
 
 namespace App2
 {
@@ -41,7 +42,7 @@ namespace App2
         /// <summary>
         /// Barcode backend property.
         /// </summary>
-        private string _barcode = "No barcode yet...";
+        private string _barcode = null;
         /// <summary>
         /// Barcode
         /// </summary>
@@ -50,6 +51,20 @@ namespace App2
             get { return _barcode; }
             set { SetProperty(ref _barcode, value); }
         }
+
+        /// <summary>
+        /// TimeToScan backend property.
+        /// </summary>
+        private TimeSpan? _timeToScan;
+        /// <summary>
+        /// TimeToScan
+        /// </summary>
+        public TimeSpan? TimeToScan
+        {
+            get { return _timeToScan; }
+            set { SetProperty(ref _timeToScan, value); }
+        }
+
         #endregion
 
         #region Commands
@@ -65,31 +80,35 @@ namespace App2
         /// <returns></returns>
         private async Task TestZXing(object arg)
         {
+            DateTime creationTime = DateTime.Now;
+
             MobileBarcodeScanningOptions options = new MobileBarcodeScanningOptions
             {
                 TryHarder = true
             };
 
-            ZXingScannerPage scanPage = new ZXingScannerPage(options);
-            scanPage.Appearing += ScanPage_Appearing;
-            scanPage.Disappearing += ScanPage_Disappearing;
+            ScannerPage scannerPage = new ScannerPage(options);
+            scannerPage.Appearing += ScannerPage_Appearing;
+            scannerPage.Disappearing += ScannerPage_Disappearing;
 
-            scanPage.OnScanResult += (result) =>
+            scannerPage.OnScanResult += (result) =>
             {
                 // Stop scanning
-                scanPage.IsScanning = false;
+                scannerPage.IsScanning = false;
                 Barcode = result.Text;
+
+                DateTime scannedTime = DateTime.Now;
+                TimeToScan = scannedTime - creationTime;
 
                 // Pop the page and show the result
                 Device.BeginInvokeOnMainThread(async () =>
                 {
                     await NavigationHelper.PopAsync();
-                    AlertHelper.DisplayAlert("Scanned Barcode", result.Text, "OK");
                 });
             };
 
             // Navigate to our scanner page
-            await NavigationHelper.PushAsync(scanPage);
+            await NavigationHelper.PushAsync(scannerPage);
         }
 
         /// <summary>
@@ -112,35 +131,23 @@ namespace App2
         }
 
         /// <summary>
-        /// ScanPage appearing event handler.
+        /// ScannerPage appearing event handler.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ScanPage_Appearing(object sender, System.EventArgs e)
+        private void ScannerPage_Appearing(object sender, System.EventArgs e)
         {
             IsScanning = true;
-
-            ZXingScannerPage scanPage = sender as ZXingScannerPage;
-            OnScanStarted(scanPage);
         }
 
         /// <summary>
-        /// ScanPage disappearing event handler.
+        /// ScannerPage disappearing event handler.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ScanPage_Disappearing(object sender, System.EventArgs e)
+        private void ScannerPage_Disappearing(object sender, System.EventArgs e)
         {
             IsScanning = false;
-        }
-
-        /// <summary>
-        /// OnScanStarted method to run platform specific code.
-        /// </summary>
-        /// <param name="scanPage"></param>
-        protected virtual void OnScanStarted(ZXingScannerPage scanPage)
-        {
-            //Nothing here, see Android override.
         }
     }
 }
