@@ -1,4 +1,5 @@
-﻿using System;
+﻿using App2.Helpers;
+using System;
 using Xamarin.Forms;
 using ZXing.Net.Mobile.Forms;
 
@@ -20,14 +21,21 @@ namespace App2.Droid.ViewModels
             //Autofocus every 3 seconds.
             Device.StartTimer(TimeSpan.FromSeconds(3), () =>
             {
-                if (scanPage == null || !scanPage.IsScanning)
+                if (scanPage == null || !IsScanning)
                 {
                     //Stop the timer.
                     return false;
                 }
                 else
                 {
-                    scanPage.AutoFocus();
+                    try
+                    {
+                        scanPage.AutoFocus();
+                    }
+                    catch (Exception e)
+                    {
+                        AlertHelper.DisplayAlert("Exception setting AutoFocus", e.Message + "\n\n" + e.StackTrace);
+                    }
                 }
 
                 //Let the timer run.

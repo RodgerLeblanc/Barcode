@@ -132,10 +132,6 @@ namespace App2
         private void ScanPage_Disappearing(object sender, System.EventArgs e)
         {
             IsScanning = false;
-
-            ZXingScannerPage scanPage = sender as ZXingScannerPage;
-            scanPage.Appearing -= ScanPage_Appearing;
-            scanPage.Disappearing -= ScanPage_Disappearing;
         }
 
         /// <summary>
