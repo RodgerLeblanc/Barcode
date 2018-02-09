@@ -4,9 +4,28 @@
              xmlns:local="clr-namespace:App2"
              x:Class="App2.MainPage">
 
-    <Button Text="Barcode"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" 
-            Clicked="Button_Clicked"/>
+    <Grid
+        VerticalOptions="Center" 
+        HorizontalOptions="Center">
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <Button 
+            Text="Scan with Zxing"
+            VerticalOptions="Center"
+            Command="{Binding ZXing.TestZXingCommand}"/>
+
+        <Label
+            Grid.Column="1"
+            VerticalOptions="Center"
+            Text="{Binding ZXing.Barcode, StringFormat='Last barcode : {0}'}"/>
+    </Grid>
 
 </ContentPage>

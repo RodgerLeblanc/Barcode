@@ -1,34 +1,20 @@
 ﻿using Xamarin.Forms;
-using ZXing.Net.Mobile.Forms;
 
 namespace App2
 {
+    /// <summary>
+    /// MainPage
+    /// </summary>
     public partial class MainPage : ContentPage
     {
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public MainPage()
         {
             InitializeComponent();
-        }
 
-        private async void Button_Clicked(object sender, System.EventArgs e)
-        {
-            var scanPage = new ZXingScannerPage();
-
-            scanPage.OnScanResult += (result) =>
-            {
-                // Stop scanning
-                scanPage.IsScanning = false;
-
-                // Pop the page and show the result
-                Device.BeginInvokeOnMainThread(() =>
-                {
-                    Navigation.PopAsync();
-                    DisplayAlert("Scanned Barcode", result.Text, "OK");
-                });
-            };
-
-            // Navigate to our scanner page
-            await Navigation.PushAsync(scanPage);
+            BindingContext = new BarcodeViewModel();
         }
     }
 }
