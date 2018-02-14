@@ -84,12 +84,17 @@ namespace App2
 
             MobileBarcodeScanningOptions options = new MobileBarcodeScanningOptions
             {
-                TryHarder = true
+                UseNativeScanning = true
             };
 
             ScannerPage scannerPage = new ScannerPage(options);
             scannerPage.Appearing += ScannerPage_Appearing;
             scannerPage.Disappearing += ScannerPage_Disappearing;
+
+            //Add tap to focus.
+            TapGestureRecognizer tapToFocusGesture = new TapGestureRecognizer();
+            tapToFocusGesture.Tapped += (o, e) => scannerPage.SetFocus();
+            scannerPage.Overlay.GestureRecognizers.Add(tapToFocusGesture);
 
             scannerPage.OnScanResult += (result) =>
             {

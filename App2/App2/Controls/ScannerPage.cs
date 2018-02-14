@@ -12,6 +12,11 @@ namespace App2.Controls
     public class ScannerPage : ZXingScannerPage
     {
         /// <summary>
+        /// Private reference to the calculated center of the screen.
+        /// </summary>
+        private Point _centerOfScreen;
+
+        /// <summary>
         /// Constructor
         /// </summary>
         public ScannerPage() : base()
@@ -23,6 +28,15 @@ namespace App2.Controls
         /// </summary>
         /// <param name="options"></param>
         public ScannerPage(MobileBarcodeScanningOptions options) : base(options)
+        {
+        }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="options"></param>
+        /// <param name="customOverlay"></param>
+        public ScannerPage(MobileBarcodeScanningOptions options, View customOverlay) : base(options, customOverlay)
         {
         }
 
@@ -51,13 +65,45 @@ namespace App2.Controls
         /// </summary>
         protected override void OnAppearing()
         {
-            IsActive = true;
-
             base.OnAppearing();
+
+            SetCenterOfScreen();
+
+            IsActive = true;
 
             if (UseAutoFocus)
             {
                 OnScanStarted();
+            }
+        }
+
+        /// <summary>
+        /// Save the center of screen point.
+        /// </summary>
+        private void SetCenterOfScreen()
+        {
+            _centerOfScreen = new Point(Width / 2, Height / 2);
+        }
+
+        /// <summary>
+        /// Set focus manually.
+        /// </summary>
+        public void SetFocus()
+        {
+            try
+            {
+                if (_centerOfScreen.IsEmpty || _centerOfScreen.X <= 0 || _centerOfScreen.Y <= 0)
+                {
+                    AutoFocus();
+                }
+                else
+                {
+                    AutoFocus(Convert.ToInt32(_centerOfScreen.X), Convert.ToInt32(_centerOfScreen.Y));
+                }
+            }
+            catch (Exception e)
+            {
+                AlertHelper.DisplayAlert("Exception setting AutoFocus", e.Message + "\n\n" + e.StackTrace);
             }
         }
 
@@ -72,7 +118,7 @@ namespace App2.Controls
         }
 
         /// <summary>
-        /// OnScanStarted method to run platform specific code.
+        /// OnScanStarted method, can be override to run platform specific code.
         /// </summary>
         protected virtual void OnScanStarted()
         {
@@ -86,14 +132,7 @@ namespace App2.Controls
                 }
                 else
                 {
-                    try
-                    {
-                        AutoFocus();
-                    }
-                    catch (Exception e)
-                    {
-                        AlertHelper.DisplayAlert("Exception setting AutoFocus", e.Message + "\n\n" + e.StackTrace);
-                    }
+                    SetFocus();
                 }
 
                 //Let the timer run.
