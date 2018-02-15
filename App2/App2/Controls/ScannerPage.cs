@@ -1,7 +1,7 @@
 ﻿using App2.Helpers;
+using App2.Models;
 using System;
 using Xamarin.Forms;
-using ZXing.Mobile;
 using ZXing.Net.Mobile.Forms;
 
 namespace App2.Controls
@@ -17,18 +17,25 @@ namespace App2.Controls
         private Point _centerOfScreen;
 
         /// <summary>
+        /// Private reference to the scanning options used with this instance.
+        /// </summary>
+        private ScanningOptionsModel _options = null;
+
+        /// <summary>
         /// Constructor
         /// </summary>
         public ScannerPage() : base()
         {
+            _options = new ScanningOptionsModel();
         }
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="options"></param>
-        public ScannerPage(MobileBarcodeScanningOptions options) : base(options)
+        public ScannerPage(ScanningOptionsModel options) : base(options)
         {
+            _options = options;
         }
 
         /// <summary>
@@ -36,8 +43,9 @@ namespace App2.Controls
         /// </summary>
         /// <param name="options"></param>
         /// <param name="customOverlay"></param>
-        public ScannerPage(MobileBarcodeScanningOptions options, View customOverlay) : base(options, customOverlay)
+        public ScannerPage(ScanningOptionsModel options, View customOverlay) : base(options, customOverlay)
         {
+            _options = options;
         }
 
         /// <summary>
@@ -56,11 +64,6 @@ namespace App2.Controls
             BindableProperty.CreateAttached("IsActive", typeof(bool), typeof(ScannerPage), false, BindingMode.OneWayToSource);
 
         /// <summary>
-        /// UseAutoFocus
-        /// </summary>
-        public bool UseAutoFocus { get; set; } = Device.RuntimePlatform == Device.Android;
-
-        /// <summary>
         /// OnAppearing override.
         /// </summary>
         protected override void OnAppearing()
@@ -71,7 +74,7 @@ namespace App2.Controls
 
             IsActive = true;
 
-            if (UseAutoFocus)
+            if (_options.UseAutoFocusLoop && !_options.DisableAutofocus)
             {
                 OnScanStarted();
             }
@@ -90,6 +93,11 @@ namespace App2.Controls
         /// </summary>
         public void SetFocus()
         {
+            if (_options.DisableAutofocus)
+            {
+                return;
+            }
+
             try
             {
                 if (_centerOfScreen.IsEmpty || _centerOfScreen.X <= 0 || _centerOfScreen.Y <= 0)

@@ -1,6 +1,6 @@
 ﻿using Xamarin.Forms;
 
-namespace App2
+namespace App2.Views
 {
     /// <summary>
     /// MainPage

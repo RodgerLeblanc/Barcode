@@ -9,7 +9,7 @@ namespace App2
         {
             InitializeComponent();
 
-            MainPage = new NavigationPage(new App2.MainPage());
+            MainPage = new NavigationPage(new Views.MainPage());
         }
 
         protected override void OnStart()

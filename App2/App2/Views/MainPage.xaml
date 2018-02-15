@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:App2.Views"
+             xmlns:conv="clr-namespace:App2.Converters"
+             xmlns:help="clr-namespace:App2.Helpers"
+             x:Class="App2.Views.MainPage">
+    <Grid>
+        <!--#region Scan and result-->
+        <Grid
+            VerticalOptions="Center" 
+            HorizontalOptions="Center">
+
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <Button 
+                Text="Scan with Zxing"
+                HorizontalOptions="Center"
+                Command="{Binding ZXing.TestZXingCommand}"/>
+
+            <Label
+                Grid.Row="1"
+                HorizontalOptions="Center"
+                IsVisible="{Binding ZXing.Barcode, Converter={conv:NullConverter TrueValue=false, FalseValue=true}}"
+                Text="{Binding ZXing.Barcode, StringFormat='Last barcode : {0}'}"/>
+
+            <Label
+                Grid.Row="2"
+                HorizontalOptions="Center"
+                IsVisible="{Binding ZXing.TimeToScan, Converter={conv:NullConverter TrueValue=false, FalseValue=true}}"
+                Text="{Binding ZXing.TimeToScan, StringFormat='Time to scan : {0}'}"/>
+        </Grid>
+        <!--#endregion-->
+
+        <Image 
+            Source="{help:ImageHelper Source='settings.png'}"
+            HorizontalOptions="Start"
+            VerticalOptions="Start"
+            WidthRequest="40"
+            HeightRequest="40">
+            <Image.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding OpenSettingsCommand}" />
+            </Image.GestureRecognizers>
+        </Image>
+    </Grid>
+
+</ContentPage>

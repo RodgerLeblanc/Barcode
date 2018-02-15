@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:conv="clr-namespace:App2.Converters"
+             x:Class="App2.Views.SettingsView"
+             Title="Settings">
+    <ScrollView>
+        <TableView Intent="Settings">
+            <TableRoot>
+                <TableSection Title="Scanning Options">
+                    <SwitchCell Text="AssumeGS1" On="{Binding AssumeGS1}"/>
+                    <SwitchCell Text="AutoRotate" On="{Binding AutoRotate}"/>
+                    <EntryCell Label="DelayBetweenAnalyzingFrames" Text="{Binding DelayBetweenAnalyzingFrames}" Keyboard="Numeric"/>
+                    <EntryCell Label="DelayBetweenContinuousScans" Text="{Binding DelayBetweenContinuousScans}" Keyboard="Numeric"/>
+                    <SwitchCell Text="DisableAutofocus" On="{Binding DisableAutofocus}"/>
+                    <EntryCell Label="InitialDelayBeforeAnalyzingFrames" Text="{Binding InitialDelayBeforeAnalyzingFrames}" Keyboard="Numeric"/>
+                    <EntryCell Label="PossibleFormats" Text="{Binding PossibleFormats, Converter={conv:PossibleFormatsStringConverter}}"/>
+                    <SwitchCell Text="PureBarcode" On="{Binding PureBarcode}"/>
+                    <SwitchCell Text="TryHarder" On="{Binding TryHarder}"/>
+                    <SwitchCell Text="TryInverted" On="{Binding TryInverted}"/>
+                    <SwitchCell Text="UseAutoFocusLoop" On="{Binding UseAutoFocusLoop}"/>
+                    <SwitchCell Text="UseCode39ExtendedMode" On="{Binding UseCode39ExtendedMode}"/>
+                    <SwitchCell Text="UseFrontCameraIfAvailable" On="{Binding UseFrontCameraIfAvailable}"/>
+                    <SwitchCell Text="UseNativeScanning" On="{Binding UseNativeScanning}"/>
+                </TableSection>
+            </TableRoot>
+        </TableView>
+    </ScrollView>
+</ContentPage>

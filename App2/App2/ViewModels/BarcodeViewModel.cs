@@ -1,4 +1,8 @@
-﻿namespace App2
+﻿using App2.Helpers;
+using App2.Views;
+using System.Windows.Input;
+
+namespace App2
 {
     /// <summary>
     /// BarcodeViewModel
@@ -12,11 +16,22 @@
         public BarcodeViewModel()
         {
             ZXing = new ZXingViewModel();
+
+            OpenSettingsCommand = CommandHelper.CreateAsyncCommand(async () =>
+            {
+                SettingsView settings = new SettingsView(ZXing.ScanningOptions);
+                await NavigationHelper.PushAsync(settings);
+            });
         }
 
         /// <summary>
         /// ZXing
         /// </summary>
         public ZXingViewModel ZXing { get; set; }
+
+        /// <summary>
+        /// OpenSettingsCommand
+        /// </summary>
+        public ICommand OpenSettingsCommand { get; }
     }
 }

@@ -1,10 +1,11 @@
 ﻿using App2.Controls;
 using App2.Helpers;
+using App2.Models;
+using App2.ViewModels;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
-using ZXing.Mobile;
 
 namespace App2
 {
@@ -19,6 +20,8 @@ namespace App2
         public ZXingViewModel()
         {
             InitializeCommands();
+
+            ScanningOptions = new ScanningOptionsViewModel(new ScanningOptionsModel());
         }
 
         #region Properties
@@ -65,6 +68,10 @@ namespace App2
             set { SetProperty(ref _timeToScan, value); }
         }
 
+        /// <summary>
+        /// ScanningOptions
+        /// </summary>
+        public ScanningOptionsViewModel ScanningOptions { get; }
         #endregion
 
         #region Commands
@@ -82,12 +89,7 @@ namespace App2
         {
             DateTime creationTime = DateTime.Now;
 
-            MobileBarcodeScanningOptions options = new MobileBarcodeScanningOptions
-            {
-                UseNativeScanning = true
-            };
-
-            ScannerPage scannerPage = new ScannerPage(options);
+            ScannerPage scannerPage = new ScannerPage(ScanningOptions.ToModel());
             scannerPage.Appearing += ScannerPage_Appearing;
             scannerPage.Disappearing += ScannerPage_Disappearing;
 

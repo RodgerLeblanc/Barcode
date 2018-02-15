@@ -12,26 +12,26 @@ namespace App2
         where TModel : IModel
     {
         /// <summary>
-        /// Private reference to the model.
-        /// </summary>
-        private TModel _model;
-
-        /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="model"></param>
         public BaseViewModel(TModel model)
         {
-            _model = model;
+            Model = model;
         }
+
+        /// <summary>
+        /// Model
+        /// </summary>
+        protected TModel Model { get; }
 
         /// <summary>
         /// Return the model.
         /// </summary>
         /// <returns></returns>
-        protected virtual TModel ToModel()
+        internal virtual TModel ToModel()
         {
-            return _model;
+            return Model;
         }
     }
 
@@ -56,6 +56,23 @@ namespace App2
 
             storage = value;
             OnPropertyChanged(propertyName);
+            return true;
+        }
+
+        /// <summary>
+        /// Set a property and call OnPropertyChanged.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="storage"></param>
+        /// <param name="value"></param>
+        /// <param name="propertyName"></param>
+        /// <returns></returns>
+        public bool SetProperty<T>(T storage, T value, [CallerMemberName]string propertyName = null)
+        {
+            T temp = storage;
+            SetProperty(ref temp, value, propertyName);
+            storage = temp;
+
             return true;
         }
 
