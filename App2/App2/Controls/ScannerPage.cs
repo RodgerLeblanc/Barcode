@@ -171,9 +171,15 @@ namespace App2.Controls
         void ScannerPage_OnScanResult(Result result)
         {
             //If the barcode format received doesn't need multiple check, we can return a result right away.
-            if (!_options.MultipleCheckForFormats.Any() || !_options.MultipleCheckForFormats.Contains(result.BarcodeFormat)) {
+            if (!_options.MultipleCheckForFormats.Contains(result.BarcodeFormat)) {
                 this.OnScanResult?.Invoke(result);
                 return;
+            }
+
+            //Clear old items if the list contains other barcode types.
+            if (_results.Any(r => r.BarcodeFormat != result.BarcodeFormat))
+            {
+                _results.Clear();
             }
 
             //This is our first result, nothing to compare with yet.
