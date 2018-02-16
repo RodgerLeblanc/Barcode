@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:App2.Views"
@@ -12,6 +12,7 @@
             HorizontalOptions="Center">
 
             <Grid.RowDefinitions>
+                <RowDefinition/>
                 <RowDefinition/>
                 <RowDefinition/>
                 <RowDefinition/>
@@ -30,6 +31,12 @@
 
             <Label
                 Grid.Row="2"
+                HorizontalOptions="Center"
+                IsVisible="{Binding ZXing.Barcode, Converter={conv:NullConverter TrueValue=false, FalseValue=true}}"
+                Text="{Binding ZXing.BarcodeFormat, StringFormat='Barcode format : {0}'}"/>
+
+            <Label
+                Grid.Row="3"
                 HorizontalOptions="Center"
                 IsVisible="{Binding ZXing.TimeToScan, Converter={conv:NullConverter TrueValue=false, FalseValue=true}}"
                 Text="{Binding ZXing.TimeToScan, StringFormat='Time to scan : {0}'}"/>

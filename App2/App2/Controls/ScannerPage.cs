@@ -3,6 +3,9 @@ using App2.Models;
 using System;
 using Xamarin.Forms;
 using ZXing.Net.Mobile.Forms;
+using ZXing;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace App2.Controls
 {
@@ -22,11 +25,22 @@ namespace App2.Controls
         private ScanningOptionsModel _options = null;
 
         /// <summary>
+        /// Private reference to the list of scanning results.
+        /// </summary>
+        private IList<Result> _results = new List<Result>();
+
+        /// <summary>
+        /// Occurs when the same barcode was detected [MultipleCheckCount] times.
+        /// </summary>
+        public new event ScanResultDelegate OnScanResult;
+
+        /// <summary>
         /// Constructor
         /// </summary>
         public ScannerPage() : base()
         {
             _options = new ScanningOptionsModel();
+            base.OnScanResult += ScannerPage_OnScanResult;
         }
 
         /// <summary>
@@ -36,6 +50,7 @@ namespace App2.Controls
         public ScannerPage(ScanningOptionsModel options) : base(options)
         {
             _options = options;
+            base.OnScanResult += ScannerPage_OnScanResult;
         }
 
         /// <summary>
@@ -46,6 +61,7 @@ namespace App2.Controls
         public ScannerPage(ScanningOptionsModel options, View customOverlay) : base(options, customOverlay)
         {
             _options = options;
+            base.OnScanResult += ScannerPage_OnScanResult;
         }
 
         /// <summary>
@@ -146,6 +162,54 @@ namespace App2.Controls
                 //Let the timer run.
                 return true;
             });
+        }
+
+        /// <summary>
+        /// ScannerPage OnScanResult callback.
+        /// </summary>
+        /// <param name="result">Result.</param>
+        void ScannerPage_OnScanResult(Result result)
+        {
+            //If the barcode format received doesn't need multiple check, we can return a result right away.
+            if (!_options.MultipleCheckForFormats.Any() || !_options.MultipleCheckForFormats.Contains(result.BarcodeFormat)) {
+                this.OnScanResult?.Invoke(result);
+                return;
+            }
+
+            //This is our first result, nothing to compare with yet.
+            if (!_results.Any()) {
+                _results.Add(result);
+                return;
+            }
+
+            Result lastResult = _results.LastOrDefault();
+
+            DateTime lastResultTime = DateTime.FromFileTimeUtc(lastResult.Timestamp);
+            DateTime newResultTime = DateTime.FromFileTimeUtc(result.Timestamp);
+            int interval = (newResultTime - lastResultTime).Milliseconds;
+
+            //If we have the same result [MultipleCheckCount] times, we can return the result.
+            if (interval > _options.MinimumMultipleCheckInterval && 
+                _results.Where(GetMatchPredicate(result)).Count() >= _options.MultipleCheckCount - 1)
+            {
+                this.OnScanResult?.Invoke(result);
+
+                _results.Clear();
+            }
+            else
+            {
+                _results.Add(result);
+            }
+        }
+
+        /// <summary>
+        /// Returns a predicate that checks if an item match the specified result.
+        /// </summary>
+        /// <returns></returns>
+        /// <param name="result"></param>
+        private Func<Result, bool> GetMatchPredicate(Result result)
+        {
+            return r => r.BarcodeFormat == result.BarcodeFormat && r.Text == result.Text;
         }
     }
 }

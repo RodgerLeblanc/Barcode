@@ -6,6 +6,7 @@ using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
+using ZXing;
 
 namespace App2
 {
@@ -69,6 +70,20 @@ namespace App2
         }
 
         /// <summary>
+        /// BarcodeFormat backend property.
+        /// </summary>
+        private BarcodeFormat _barcodeFormat;
+        /// <summary>
+        /// BarcodeFormat
+        /// </summary>
+        /// <value>The barcode format.</value>
+        public BarcodeFormat BarcodeFormat
+        {
+            get { return _barcodeFormat; }
+            set { SetProperty(ref _barcodeFormat, value); }
+        }
+
+        /// <summary>
         /// ScanningOptions
         /// </summary>
         public ScanningOptionsViewModel ScanningOptions { get; }
@@ -98,11 +113,12 @@ namespace App2
             tapToFocusGesture.Tapped += (o, e) => scannerPage.SetFocus();
             scannerPage.Overlay.GestureRecognizers.Add(tapToFocusGesture);
 
-            scannerPage.OnScanResult += (result) =>
+            scannerPage.OnScanResult += (result) => 
             {
                 // Stop scanning
                 scannerPage.IsScanning = false;
                 Barcode = result.Text;
+                BarcodeFormat = result.BarcodeFormat;
 
                 DateTime scannedTime = DateTime.Now;
                 TimeToScan = scannedTime - creationTime;

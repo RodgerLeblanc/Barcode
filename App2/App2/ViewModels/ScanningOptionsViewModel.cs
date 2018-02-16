@@ -72,6 +72,33 @@ namespace App2.ViewModels
         }
 
         /// <summary>
+        /// MinimumMultipleCheckInterval
+        /// </summary>
+        public int MinimumMultipleCheckInterval 
+        {
+            get { return Model.MinimumMultipleCheckInterval; }
+            set { Model.MinimumMultipleCheckInterval = value; OnPropertyChanged(); }
+        }
+
+        /// <summary>
+        /// MultipleCheckCount
+        /// </summary>
+        public int MultipleCheckCount 
+        {
+            get { return Model.MultipleCheckCount; }
+            set { Model.MultipleCheckCount = value; OnPropertyChanged(); }
+        }
+
+        /// <summary>
+        /// MultipleCheckForFormats
+        /// </summary>
+        public List<BarcodeFormat> MultipleCheckForFormats
+        {
+            get { return Model.MultipleCheckForFormats; }
+            set { Model.MultipleCheckForFormats = value; OnPropertyChanged(); }
+        }
+
+        /// <summary>
         /// PossibleFormats
         /// </summary>
         public List<BarcodeFormat> PossibleFormats

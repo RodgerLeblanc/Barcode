@@ -50,5 +50,7 @@
 	<string>LaunchScreen</string>
 	<key>CFBundleName</key>
 	<string>App2</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Camera is needed for barcode scanning</string>
 </dict>
 </plist>

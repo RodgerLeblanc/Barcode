@@ -15,8 +15,8 @@
     
   <ItemGroup>
     <PackageReference Include="System.ComponentModel" Version="4.3.0" />
-    <PackageReference Include="Xamarin.Forms" Version="2.5.0.121934" />
     <PackageReference Include="ZXing.Net.Mobile.Forms" Version="2.3.2" />
+    <PackageReference Include="Xamarin.Forms" Version="2.5.0.122203" />
   </ItemGroup>
 
   <ItemGroup>
